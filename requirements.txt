@@ -1,0 +1,2 @@
+django == 2.2
+yandex_checkout == 1.0.0

@@ -5,11 +5,14 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import PaymentInfo
 from .forms import PaymentInfoForm
+from .reservation import *
 
 import uuid
 import json
+import re
 
 from yandex_checkout import Configuration, Payment
+
 
 Configuration.account_id = '661942' # id магазина в яндекс кассе.
 Configuration.secret_key = 'test_2JJzpAq12XYX5uQ7kFnYYKddueEG6i4mmfC5GDtULZg'
@@ -53,13 +56,18 @@ def yandex_confirm(request):
             pass
         try:    
             model.payment_id = data['id']
-            model.phone = data['description']
+            # id платежа из яндекс кассы
+            model.phone = '+' + ''.join(re.findall(r'\d', data['description']))
+            # привожу + 7 (900) 00-000-00 к +79000000000
             model.money = int(float(data['amount']['value']))
+            # привожу строку 100.00 к цыфре 100
             model.paid = True
             model.save_with_bonus()
+            
+            continue_play(model.phone, model.money, 1) # last argument it's time in hours
             status = 200
         except:
-            status = 404
+            status = 200
         return HttpResponse(status=status)
 
 

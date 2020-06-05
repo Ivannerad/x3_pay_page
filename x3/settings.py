@@ -25,7 +25,7 @@ SECRET_KEY = 'd!dp=h@i+drzwj0=b%if6kpn6a01^o5-^enz_cyxl&l6x2y!97'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['',]
+ALLOWED_HOSTS = ['f06798a6a4a1.ngrok.io',]
 # Не забыть заменить в яндекс кассе урл магазина
 
 # Application definition

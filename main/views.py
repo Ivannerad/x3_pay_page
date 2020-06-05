@@ -33,6 +33,22 @@ def index_page(request):
                         "type": "redirect",
                         "return_url": settings.ALLOWED_HOSTS[0]
                     },
+                    "receipt": {
+                         "customer": {
+                            "full_name": "ФИО",
+                            "phone": ''.join(re.findall(r'\d', form.cleaned_data['phone']))
+                                     },
+                        "items": [{
+                            "description": "Оплата бронирования",
+                            "quantity": "1.00",
+                            "amount": {
+                                "value": form.cleaned_data['money'],
+                                "currency": "RUB"
+                                        },
+                            "vat_code": "2",
+                            "payment_mode": "full_prepayment",
+                            "payment_subject": "commodity"}]
+                    },
                     "capture": True,
                     "description": form.cleaned_data['phone']
                 }, uuid.uuid4())
@@ -49,6 +65,7 @@ def yandex_confirm(request):
         if data['status'] == 'waiting_for_capture':
             payment_id = response_json['object']['id']
             data = Payment.capture(payment_id)
+            # если платеж ожидает подтверждения, подтверждаю
             model = PaymentInfo()
         elif data['status'] == 'succeeded':
             model = PaymentInfo()
@@ -63,8 +80,9 @@ def yandex_confirm(request):
             # привожу строку 100.00 к цыфре 100
             model.paid = True
             model.save_with_bonus()
-            
-            continue_play(model.phone, model.money, 1) # last argument it's time in hours
+            mount = str(model.money + model.count_bonus(model.money))
+            # Привожу сумму + бонус к строке для передачи в апи 
+            continue_play(model.phone, mount, 1) # last argument it's time in hours
             status = 200
         except:
             status = 200

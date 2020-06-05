@@ -22,7 +22,8 @@ class PaymentInfo(models.Model):
         elif 4000 <= money:
             bonus = money * 0.15
         else:
-            pass
+            if money == 1:
+                bonus = 2
         return round(bonus)
             
     def __str__(self):

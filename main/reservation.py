@@ -94,10 +94,10 @@ def booking_reservation(login, workstation_id, start_date, time):
         pass # error: not enough money
 
 def continue_play(login, amount, time):
-    ''' Account refill and continue booking'''
+    ''' Account refill and continue booking. If need booking, just on it. '''
     account_id = get_account_id(login)
     cashdesk = get_active_cashdesk()
     refill_account(cashdesk, account_id, amount)
-    workstation_id, start_date = get_workstation_id(account_id)
-    booking_reservation(login, workstation_id, start_date, time)
+#    workstation_id, start_date = get_workstation_id(account_id)
+#    booking_reservation(login, workstation_id, start_date, time)
 
